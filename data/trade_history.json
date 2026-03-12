@@ -30,5 +30,13 @@
         "balance_usdt": 387.42048900000003,
         "btc_held": 0.00881632320376865,
         "profit_usdt_realized": 0.0
+    },
+    {
+        "timestamp": "2026-03-12T09:10:38.827421",
+        "action": "buy",
+        "price": 69817.4,
+        "balance_usdt": 348.67844010000005,
+        "btc_held": 0.00937122855544316,
+        "profit_usdt_realized": 0.0
     }
 ]
