@@ -1,0 +1,10 @@
+[
+    {
+        "timestamp": "2026-03-12T12:04:23.897746",
+        "action": "buy",
+        "price": 69529.8,
+        "balance_usdt": 531.441,
+        "btc_held": 0.006748535555172076,
+        "profit_usdt_realized": 0.0
+    }
+]

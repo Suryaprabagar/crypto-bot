@@ -24,7 +24,7 @@ def get_market_data(symbol="BTC/USDT", timeframe="5m", limit=50):
         # Extract the closing prices
         closing_prices = [candle[4] for candle in ohlcv]
 
-        return current_price, closing_prices
+        return current_price, ohlcv, closing_prices
 
     except ccxt.NetworkError as e:
         print(f"Network error fetching from Binance: {e}")
