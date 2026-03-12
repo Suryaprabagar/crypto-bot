@@ -3,12 +3,12 @@ import time
 
 def get_market_data(symbol="BTC/USDT", timeframe="5m", limit=50):
     """
-    Connects to Binance (no auth required for public endpoints),
+    Connects to KuCoin (more permissive for cloud runners),
     fetches the latest ticker price and the last `limit` candles.
     Returns the latest price and a list of closing prices.
     """
     # Initialize the exchange
-    exchange = ccxt.binance({
+    exchange = ccxt.kucoin({
         "enableRateLimit": True,
     })
 
