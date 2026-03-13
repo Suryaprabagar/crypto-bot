@@ -99,18 +99,18 @@ def check_signal(closing_prices, params):
     ))
     
     # RSI
-    rsi_params = params.get("rsi_strategy", {"buy_threshold": 30, "sell_threshold": 70})
+    rsi_params = params.get("rsi_strategy", {"buy_threshold": 35, "sell_threshold": 65})
     votes.append(strategy_rsi(
         closing_prices,
-        rsi_params.get("buy_threshold", 30),
-        rsi_params.get("sell_threshold", 70)
+        rsi_params.get("buy_threshold", 35),
+        rsi_params.get("sell_threshold", 65)
     ))
     
     # Momentum
-    mom_params = params.get("momentum_strategy", {"threshold_pct": 0.05})
+    mom_params = params.get("momentum_strategy", {"threshold_pct": 0.005})
     votes.append(strategy_momentum(
         closing_prices,
-        mom_params.get("threshold_pct", 0.05)
+        mom_params.get("threshold_pct", 0.005)
     ))
     
     # Tally votes (using 2 out of 3 logic basically since there are 3 strategies)

@@ -25,11 +25,12 @@ def generate_parameter_grid():
     """Generate combinations of parameters for backtesting."""
     grids = []
     
-    short_windows = [3, 5, 7]
-    long_windows = [15, 20, 25]
-    buy_thresholds = [25, 30]
-    sell_thresholds = [65, 70]
-    thresholds = [0.03, 0.05]
+    # Updated ranges for practical conditions
+    short_windows = [3, 5, 8]
+    long_windows = [13, 21, 34]
+    buy_thresholds = [30, 35, 40]
+    sell_thresholds = [60, 65, 70]
+    thresholds = [0.003, 0.005, 0.01]
     
     for sw, lw, bt, st, th in itertools.product(short_windows, long_windows, buy_thresholds, sell_thresholds, thresholds):
         if sw < lw:
