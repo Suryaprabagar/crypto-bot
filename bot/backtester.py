@@ -1,6 +1,9 @@
 import pandas as pd
 from strategy import check_signal
 
+TRADING_FEE = 0.005
+SLIPPAGE = 0.0005
+
 def run_backtest(ohlcv_data, params):
     """
     Simulate the strategy on historical data.
@@ -13,7 +16,7 @@ def run_backtest(ohlcv_data, params):
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
     
     balance = 1000.0
-    btc = 0.0
+    asset_balance = 0.0
     initial_balance = balance
     
     trades = 0
@@ -36,25 +39,31 @@ def run_backtest(ohlcv_data, params):
         signal = check_signal(current_closes, params)
         
         if signal == "buy" and balance > 0:
+            executed_price = current_price * (1 + SLIPPAGE)
             trade_amount_usdt = balance * 0.10
-            btc_bought = trade_amount_usdt / current_price
-            balance -= trade_amount_usdt
-            btc += btc_bought
-            buy_price = current_price
+            fee = trade_amount_usdt * TRADING_FEE
             
-        elif signal == "sell" and btc > 0:
-            usdt_gained = btc * current_price
+            asset_bought = (trade_amount_usdt - fee) / executed_price
+            balance -= trade_amount_usdt
+            asset_balance += asset_bought
+            buy_price = executed_price
+            
+        elif signal == "sell" and asset_balance > 0:
+            executed_price = current_price * (1 - SLIPPAGE)
+            usdt_value = asset_balance * executed_price
+            fee = usdt_value * TRADING_FEE
+            net_usdt = usdt_value - fee
             
             # Record win/loss
-            if current_price > buy_price:
+            if executed_price > buy_price:
                 winning_trades += 1
             trades += 1
             
-            balance += usdt_gained
-            btc = 0.0
+            balance += net_usdt
+            asset_balance = 0.0
             
         # Update peak and DD
-        current_portfolio_value = balance + (btc * current_price)
+        current_portfolio_value = balance + (asset_balance * current_price)
         if current_portfolio_value > peak_balance:
             peak_balance = current_portfolio_value
             
@@ -63,7 +72,7 @@ def run_backtest(ohlcv_data, params):
             max_drawdown = drawdown
             
     # Final liquidation to calculate true total value at the end of backtest
-    final_value = balance + (btc * closing_prices[-1])
+    final_value = balance + (asset_balance * closing_prices[-1])
     total_profit = final_value - initial_balance
     
     win_rate = (winning_trades / trades) if trades > 0 else 0

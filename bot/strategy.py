@@ -85,33 +85,41 @@ def strategy_momentum(closing_prices, threshold_pct):
 
 def check_signal(closing_prices, params):
     """
-    Master function to check signals based on the active strategy.
-    Expects params dict from strategy_params.json
+    Master function to check signals based on a strategy voting mechanism.
+    Evaluates MA Crossover, RSI, and Momentum.
     """
-    active_strat = params.get("active_strategy", "ma_crossover")
+    votes = []
     
-    if active_strat == "ma_crossover":
-        strat_params = params.get("ma_crossover", {"short_window": 5, "long_window": 20})
-        return strategy_ma_crossover(
-            closing_prices, 
-            strat_params.get("short_window", 5), 
-            strat_params.get("long_window", 20)
-        )
-        
-    elif active_strat == "rsi_strategy":
-        strat_params = params.get("rsi_strategy", {"buy_threshold": 30, "sell_threshold": 70})
-        return strategy_rsi(
-            closing_prices,
-            strat_params.get("buy_threshold", 30),
-            strat_params.get("sell_threshold", 70)
-        )
-        
-    elif active_strat == "momentum_strategy":
-        strat_params = params.get("momentum_strategy", {"threshold_pct": 0.05})
-        return strategy_momentum(
-            closing_prices,
-            strat_params.get("threshold_pct", 0.05)
-        )
+    # MA Crossover
+    ma_params = params.get("ma_crossover", {"short_window": 5, "long_window": 20})
+    votes.append(strategy_ma_crossover(
+        closing_prices, 
+        ma_params.get("short_window", 5), 
+        ma_params.get("long_window", 20)
+    ))
+    
+    # RSI
+    rsi_params = params.get("rsi_strategy", {"buy_threshold": 30, "sell_threshold": 70})
+    votes.append(strategy_rsi(
+        closing_prices,
+        rsi_params.get("buy_threshold", 30),
+        rsi_params.get("sell_threshold", 70)
+    ))
+    
+    # Momentum
+    mom_params = params.get("momentum_strategy", {"threshold_pct": 0.05})
+    votes.append(strategy_momentum(
+        closing_prices,
+        mom_params.get("threshold_pct", 0.05)
+    ))
+    
+    # Tally votes (using 2 out of 3 logic basically since there are 3 strategies)
+    buy_count = votes.count("buy")
+    sell_count = votes.count("sell")
+    
+    if buy_count >= 2:
+        return "buy"
+    elif sell_count >= 2:
+        return "sell"
         
     return "hold"
-

@@ -1,12 +1,12 @@
 {
-    "active_strategy": "rsi_strategy",
+    "active_strategy": "ma_crossover",
     "ma_crossover": {
         "short_window": 5,
         "long_window": 20
     },
     "rsi_strategy": {
-        "buy_threshold": 35,
-        "sell_threshold": 75
+        "buy_threshold": 30,
+        "sell_threshold": 70
     },
     "momentum_strategy": {
         "threshold_pct": 0.05
