@@ -22,6 +22,7 @@ def main():
         }
         
     state = load_state()
+    latest_prices = {}
     
     # Random chance to run optimizer (e.g. 5% chance per cron run)
     if random.random() < 0.05:
@@ -39,6 +40,7 @@ def main():
             print(f"Failed to fetch market data for {pair}. Skipping.")
             continue
 
+        latest_prices[pair] = current_price
         asset = pair.split('/')[0].lower()
         entry_price = state.get(f'last_buy_price_{asset}', 0.0)
         
@@ -61,7 +63,25 @@ def main():
         state = load_state()
         
     print("\nUpdating performance metrics...")
-    generate_analytics()
+    stats = generate_analytics()
+    
+    # Final Reporting
+    print("\n" + "="*50)
+    print("FINAL WORKFLOW REPORT")
+    print("="*50)
+    
+    if stats:
+        print(f"Total Fees Paid (All Time): ${stats.get('total_fees', 0):.4f}")
+    
+    # Calculate current portfolio value
+    portfolio_value = state.get('balance', 0.0)
+    for pair, price in latest_prices.items():
+        asset = pair.split('/')[0].lower()
+        amount = state.get(asset, 0.0)
+        portfolio_value += amount * price
+    
+    print(f"Total Portfolio Value: ${portfolio_value:.2f}")
+    print("="*50)
     
     print("\nBot run completed successfully.")
 

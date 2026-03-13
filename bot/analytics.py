@@ -6,8 +6,10 @@ PERFORMANCE_FILE = os.path.join(os.path.dirname(__file__), '..', 'data', 'perfor
 
 def generate_analytics():
     """Reads trade_history.json, calculates stats, and saves to performance.json"""
+    default_stats = {"total_profit": 0, "total_fees": 0, "total_trades": 0, "win_rate": 0, "average_trade_profit": 0, "maximum_drawdown": 0}
+    
     if not os.path.exists(HISTORY_FILE):
-        return
+        return default_stats
         
     with open(HISTORY_FILE, 'r') as f:
         try:
@@ -17,8 +19,8 @@ def generate_analytics():
             
     if not history:
         with open(PERFORMANCE_FILE, 'w') as f:
-            json.dump({"total_profit": 0, "total_fees": 0}, f, indent=4)
-        return
+            json.dump(default_stats, f, indent=4)
+        return default_stats
         
     total_trades = len(history)
     sells = [t for t in history if t.get('action') == 'sell']

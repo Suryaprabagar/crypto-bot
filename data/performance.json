@@ -1,4 +1,8 @@
 {
     "total_profit": 0,
-    "total_fees": 0
+    "total_fees": 0,
+    "total_trades": 0,
+    "win_rate": 0,
+    "average_trade_profit": 0,
+    "maximum_drawdown": 0
 }
